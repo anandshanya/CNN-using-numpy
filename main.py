@@ -117,11 +117,11 @@ class error:
 def forward_conv(X,W,strides):#X is 2D, W = [row,columns,o_channels] , strides = [row,column]
 	'''
 		(I # K)[i,j] = sum_m(sum_n(sum_c(K[m,n,c] * I[strides[0] * i + m,strides[1] * j + n]))); 0 <= m <=k1-1,0 <= n <=k2-1,0 <= c <= D,
-		K ϵ R^(k1 * k2 * C * D)
-		I ϵ R^(H * W * C)
+		K belongs to R^(k1 * k2 * C * D)
+		I belongs to R^(H * W * C)
 		# : convolutional operation
 	'''
-
+	X = np.concatenate((np.concatenate((X, np.zeros(32)[:,None]),axis = 1),np.zeros(33)[None,:]),axis=0)
 	activation = []
 	for i in range(X.shape[0]//strides[0]):	
 		temp2 = []
@@ -140,13 +140,14 @@ def forward_conv(X,W,strides):#X is 2D, W = [row,columns,o_channels] , strides =
 def forward_FC(X,W):
 	return np.matmul(X, W)
 
-epoch = 100
+epoch = 1
 # Variable declaration
 
 W1 = Variables(np.ones([3,3,4]))
 W2 = Variables(np.ones([1024,10]))
 
-X = np.ones([33, 33])#input
+X = np.ones([32, 32])#input
+
 Y = np.array([0, 0, 1, 0, 0, 0, 0, 0, 0, 0])#label
 for n_epoch in range(epoch):
 	h_conv1 = forward_conv(X,W1.variable,[2, 2])
@@ -177,3 +178,4 @@ for n_epoch in range(epoch):
 				
 			
 		
+
